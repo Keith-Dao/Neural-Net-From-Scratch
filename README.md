@@ -23,16 +23,18 @@ Below is a simplified view of the network.
 
 The following are a brief description of all the variables that will appear.
 
-| Variable  | Description                                           |
-| --------- | ----------------------------------------------------- |
-| $X$       | The input values.                                     |
-| $H_i$     | The values of the neurons for the $i$-th hidden layer |
-| $O$       | The output values of the network                      |
-| $P$       | The probability of predicting a class                 |
-| $\hat{y}$ | The predicted class                                   |
-| $y$       | The actual class                                      |
-| $W_x$     | The weights going into the layer $x$                  |
-| $B_x$     | The bias for the layer $x$                            |
+| Variable  | Description                                              |
+| --------- | -------------------------------------------------------- |
+| $X$       | The input values.                                        |
+| $H_i$     | The values of the neurons for the $i$-th hidden layer    |
+| $O$       | The output values of the network                         |
+| $P$       | The probability of predicting a class                    |
+| $T$       | The one-hot encoded truth label                          |
+| $\hat{y}$ | The predicted class                                      |
+| $y$       | The actual class                                         |
+| $W_x$     | The weights going into the layer $x$                     |
+| $B_x$     | The bias for the layer $x$                               |
+| $n$       | The number of classes, in this case it will always be 10 |
 
 The following are the dimensions for all the variables.
 
@@ -43,6 +45,7 @@ The following are the dimensions for all the variables.
 | $H_2$     | Minibatch size x $250$ |
 | $O$       | Minibatch size x $10$  |
 | $P$       | Minibatch size x $10$  |
+| $T$       | Minibatch size x $10$  |
 | $\hat{y}$ | Minibatch size x $1$   |
 | $y$       | Minibatch size x $1$   |
 | $W_{H_1}$ | $784$ x $250$          |
@@ -71,10 +74,10 @@ $$
 
 In order to obtain the predicted class, the softmax function must first be applied to the output logits. Then, apply argmax to determine the neuron with the highest probability.
 
-| Function | Equation                                                |
-| -------- | ------------------------------------------------------- |
-| Softmax  | $$\sigma(X)_i = \frac{e^{X_i}}{\sum _{j=1}^K e^{X_j}}$$ |
-| Argmax   | $$ \hat{y} = \argmax\_{i} X_i $$                        |
+| Function | Equation                                                      |
+| -------- | ------------------------------------------------------------- |
+| Softmax  | $$P_i = \sigma(X)_i = \frac{e^{X_i}}{\sum _{j=1}^K e^{X_j}}$$ |
+| Argmax   | $$\hat{y} = \argmax_{i} X_i$$                                 |
 
 Thus, the following is applied to obtained the predictions.
 
@@ -83,3 +86,44 @@ $$
     P = \sigma(O) \\
     \hat{y} = \argmax_i \sigma(O)_i
 $$
+
+### 3.3. Backward Pass
+
+The following are functions that will be used during the backward pass.
+
+| Function           | Equation                                                      |
+| ------------------ | ------------------------------------------------------------- |
+| Softmax            | $$P_i = \sigma(X)_i = \frac{e^{X_i}}{\sum _{j=1}^n e^{X_j}}$$ |
+| Cross-entropy loss | $$L_{CE} = -\sum_{i=1}^n T_i \log (P_i)$$                     |
+
+We will use backpropagation to update the weights, given as the following.
+
+$$
+    w = w - \alpha \cdot \frac{\partial L }{\partial w}
+$$
+
+$\alpha$ in the equation above is the learning rate. A learning rate of $10^{-4}$ will be used as the default.
+
+Additionally, we need to the gradients of the loss function with respect to the parameter that we are attempting to update. We can obtain the gradients via differentiating and applying the chain rule.
+
+| Function Derivative                                     | Equation                                 |
+| ------------------------------------------------------- | ---------------------------------------- |
+| $$\frac{\partial L_{CE}}{\partial O}$$                  | $$P - T$$                                |
+| $$\frac{\partial \text{ Linear function}}{\partial W}$$ | $$X$$                                    |
+| $$\frac{\partial \text{ Linear function}}{\partial B}$$ | $$1$$                                    |
+| $$\frac{\partial \text{ Linear function}}{\partial X}$$ | $$W$$                                    |
+| $$\frac{\partial \text{ ReLU}}{\partial X}$$            | $$1 \text{ if } x > 0 \text{, else } 0$$ |
+
+| Parameter | Derivative Chain                                                                                                                                                 | Loss Derivative w.r.t Parameter                                               |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| $O$       | $$\frac{\partial L_{CE}}{\partial O} $$                                                                                                                          | $P - T$                                                                       |
+| $W_O$     | $$\frac{\partial L_{CE}}{\partial O} \cdot \frac{\partial O}{\partial W_O} $$                                                                                    | $(P - T) \cdot H_2$                                                           |
+| $B_O$     | $$\frac{\partial L_{CE}}{\partial O} \cdot \frac{\partial O}{\partial B_O}$$                                                                                     | $(P - T) \cdot 1$                                                             |
+| $H_2$     | $$\frac{\partial L_{CE}}{\partial O} \cdot \frac{\partial O}{\partial H_2}$$                                                                                     | $(P - T) \cdot W_O$                                                           |
+| $W_{H_2}$ | $$\frac{\partial L_{CE}}{\partial O} \cdot \frac{\partial O}{\partial H_2} \cdot \frac{\partial H_2}{\partial W_{H_2}}$$                                         | $(P - T) \cdot W_O \cdot \{H_2 > 0\} \cdot H_1$                               |
+| $B_{H_2}$ | $$\frac{\partial L_{CE}}{\partial O} \cdot \frac{\partial O}{\partial H_2} \cdot \frac{\partial H_2}{\partial B_{H_2}}$$                                         | $(P - T) \cdot W_O \cdot \{H_2 > 0\} \cdot 1$                                 |
+| $H_1$     | $$\frac{\partial L_{CE}}{\partial O} \cdot \frac{\partial O}{\partial H_2} \cdot \frac{\partial H_2}{\partial H_1}$$                                             | $(P - T) \cdot W_O \cdot \{H_2 > 0\} \cdot W_{H_2}$                           |
+| $W_{H_1}$ | $$\frac{\partial L_{CE}}{\partial O} \cdot \frac{\partial O}{\partial H_2} \cdot \frac{\partial H_2}{\partial H_1} \cdot \frac{\partial H_1}{\partial W_{H_1}}$$ | $(P - T) \cdot W_O \cdot \{H_2 > 0\} \cdot W_{H_2} \cdot \{H_1 > 0\} \cdot X$ |
+| $B_{H_1}$ | $$\frac{\partial L_{CE}}{\partial O} \cdot \frac{\partial O}{\partial H_2} \cdot \frac{\partial H_2}{\partial H_1} \cdot \frac{\partial H_1}{\partial B_{H_1}}$$ | $(P - T) \cdot W_O \cdot \{H_2 > 0\} \cdot W_{H_2} \cdot \{H_1 > 0\} \cdot 1$ |
+
+For the explanation for the derivative $\frac{\partial L_{CE}}{\partial O}$, view [here](https://towardsdatascience.com/derivative-of-the-softmax-function-and-the-categorical-cross-entropy-loss-ffceefc081d1).
