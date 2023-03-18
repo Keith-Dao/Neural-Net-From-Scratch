@@ -28,6 +28,7 @@ The following are a brief description of all the variables that will appear.
 | $X$       | The input values.                                     |
 | $H_i$     | The values of the neurons for the $i$-th hidden layer |
 | $O$       | The output values of the network                      |
+| $P$       | The probability of predicting a class                 |
 | $\hat{y}$ | The predicted class                                   |
 | $y$       | The actual class                                      |
 | $W_x$     | The weights going into the layer $x$                  |
@@ -41,6 +42,7 @@ The following are the dimensions for all the variables.
 | $H_1$     | Minibatch size x $250$ |
 | $H_2$     | Minibatch size x $250$ |
 | $O$       | Minibatch size x $10$  |
+| $P$       | Minibatch size x $10$  |
 | $\hat{y}$ | Minibatch size x $1$   |
 | $y$       | Minibatch size x $1$   |
 | $W_{H_1}$ | $784$ x $250$          |
@@ -52,14 +54,14 @@ The following are the dimensions for all the variables.
 
 ### 3.2. Forward Pass
 
-The following are functions that will be used.
+The following are functions that will be used during the forward pass.
 
 | Function        | Equation                        |
 | --------------- | ------------------------------- |
 | Linear function | $$Y = XW + B $$                 |
 | ReLU            | $$\sigma(X)_i = \max (X_i, 0)$$ |
 
-The following are the functions in the order preformed by the network
+The following are the functions in the order preformed by the network.
 
 $$
     H_1 = \sigma (W_{H_1}X + B_{H_1}) \\
@@ -74,9 +76,10 @@ In order to obtain the predicted class, the softmax function must first be appli
 | Softmax  | $$\sigma(X)_i = \frac{e^{X_i}}{\sum _{j=1}^K e^{X_j}}$$ |
 | Argmax   | $$ \hat{y} = \argmax\_{i} X_i $$                        |
 
-Thus, the following is applied to obtained the predictions
+Thus, the following is applied to obtained the predictions.
 
 $$
     \sigma(O)_i = \frac{e^{O_i}}{\sum_{j=1}^K e^{O_j}} \\
+    P = \sigma(O) \\
     \hat{y} = \argmax_i \sigma(O)_i
 $$
