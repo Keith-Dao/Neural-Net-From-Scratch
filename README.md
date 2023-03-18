@@ -49,3 +49,34 @@ The following are the dimensions for all the variables.
 | $B_{H_1}$ | $250$                  |
 | $B_{H_2}$ | $250$                  |
 | $B_{O}$   | $10$                   |
+
+### 3.2. Forward Pass
+
+The following are functions that will be used.
+
+| Function        | Equation                        |
+| --------------- | ------------------------------- |
+| Linear function | $$Y = XW + B $$                 |
+| ReLU            | $$\sigma(X)_i = \max (X_i, 0)$$ |
+
+The following are the functions in the order preformed by the network
+
+$$
+    H_1 = \sigma (W_{H_1}X + B_{H_1}) \\
+    H_2 = \sigma (W_{H_2}H_1 + B_{H_2}) \\
+    O = W_O H_2 + B_O
+$$
+
+In order to obtain the predicted class, the softmax function must first be applied to the output logits. Then, apply argmax to determine the neuron with the highest probability.
+
+| Function | Equation                                                |
+| -------- | ------------------------------------------------------- |
+| Softmax  | $$\sigma(X)_i = \frac{e^{X_i}}{\sum _{j=1}^K e^{X_j}}$$ |
+| Argmax   | $$ \hat{y} = \argmax\_{i} X_i $$                        |
+
+Thus, the following is applied to obtained the predictions
+
+$$
+    \sigma(O)_i = \frac{e^{O_i}}{\sum_{j=1}^K e^{O_j}} \\
+    \hat{y} = \argmax_i \sigma(O)_i
+$$
