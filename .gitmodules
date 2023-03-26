@@ -1,3 +1,6 @@
 [submodule "python"]
 	path = python
 	url = git@github.com:Keith-Dao/Numpy-Nerual-Net.git
+[submodule "MNIST data extractor"]
+	path = MNIST data extractor
+	url = git@github.com:Keith-Dao/MNIST-data-extractor.git
