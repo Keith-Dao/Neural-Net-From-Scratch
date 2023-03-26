@@ -81,16 +81,16 @@ $$
 
 In order to obtain the predicted class, the softmax function must first be applied to the output logits. Then, apply argmax to determine the neuron with the highest probability.
 
-| Function | Equation                                             |
-| -------- | ---------------------------------------------------- |
-| Softmax  | $$\sigma(X) = \frac{e^{X}}{\sum _{i=1}^K e^{X_i}}$$  |
-| Argmax   | $$\hat{y} = \underset{i}{\operatorname{\argmax}} X$$ |
+| Function | Equation                                            |
+| -------- | --------------------------------------------------- |
+| Softmax  | $$\sigma(X) = \frac{e^{X}}{\sum _{i=1}^K e^{X_i}}$$ |
+| Argmax   | $$\hat{y} = \underset{i}{\text{arg max }} X$$       |
 
 Thus, the following is applied to obtained the predictions.
 
 $$
     P = \frac{e^{O}}{\sum_{i=1}^K e^{O_i}} \\
-    \hat{y} = \underset{i}{\operatorname{\argmax}} \sigma(O)
+    \hat{y} = \underset{i}{\text{arg max }} \sigma(O)
 $$
 
 ### 3.3. Backward Pass
