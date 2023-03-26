@@ -81,15 +81,15 @@ $$
 
 In order to obtain the predicted class, the softmax function must first be applied to the output logits. Then, apply argmax to determine the neuron with the highest probability.
 
-| Function | Equation                                           |
-| -------- | -------------------------------------------------- |
-| Softmax  | $$\sigma(X) = \frac{e^{X}}{\sum^K_{i=1} e^{X_i}}$$ |
-| Argmax   | $$\hat{y} = \underset{i}{\text{arg max }} X$$      |
+| Function | Equation                                                                |
+| -------- | ----------------------------------------------------------------------- |
+| Softmax  | $$\sigma(X) = \frac{e^{X}}{\underset{i=1}{\overset{n}{\sum}} e^{X_i}}$$ |
+| Argmax   | $$\hat{y} = \underset{i}{\text{arg max }} X$$                           |
 
 Thus, the following is applied to obtained the predictions.
 
 $$
-    P = \frac{e^{O}}{\sum^K_{i=1} e^{O_i}} \\
+    P = \frac{e^{O}}{\underset{i=1}{\overset{n}{\sum}} e^{O_i}} \\
     \hat{y} = \underset{i}{\text{arg max }} \sigma(O)
 $$
 
@@ -97,10 +97,10 @@ $$
 
 The following are functions that will be used during the backward pass.
 
-| Function           | Equation                                           |
-| ------------------ | -------------------------------------------------- |
-| Softmax            | $$\sigma(X) = \frac{e^{X}}{\sum_{i=1}^n e^{X_i}}$$ |
-| Cross-entropy loss | $$L_{CE} = -\sum_{i=1}^n T_i \log (P_i)$$          |
+| Function           | Equation                                                               |
+| ------------------ | ---------------------------------------------------------------------- |
+| Softmax            | $$\sigma(X) = \frac{e^{X}}{\underset{i=1}{\overset{n}{\sum}}e^{X_i}}$$ |
+| Cross-entropy loss | $$L_{CE} = -\sum_{i=1}^n T_i \log (P_i)$$                              |
 
 We will use backpropagation to update the weights, given as the following.
 
