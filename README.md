@@ -72,10 +72,22 @@ The following are functions that will be used during the forward pass.
 The following are the functions in the order preformed by the network.
 
 $$
-    Z_1 = X W_{H_1}^T + B_{H_1} \\
-    H_1 = \text{ReLU}(Z_1) \\
-    Z_2 = H_1 W_{H_2}^T + B_{H_2} \\
-    H_2 = \text{ReLU}(Z_2) \\
+    Z_1 = X W_{H_1}^T + B_{H_1}
+$$
+
+$$
+    H_1 = \text{ReLU}(Z_1)
+$$
+
+$$
+    Z_2 = H_1 W_{H_2}^T + B_{H_2}
+$$
+
+$$
+    H_2 = \text{ReLU}(Z_2)
+$$
+
+$$
     O = H_2 W_O^T + B_O
 $$
 
@@ -89,7 +101,10 @@ In order to obtain the predicted class, the softmax function must first be appli
 Thus, the following is applied to obtained the predictions.
 
 $$
-    P = \frac{e^{O}}{\underset{i=1}{\overset{n}{\sum}} e^{O_i}} \\
+    P = \frac{e^{O}}{\underset{i=1}{\overset{n}{\sum}} e^{O_i}}
+$$
+
+$$
     \hat{y} = \underset{i}{\text{arg max }} \sigma(O)
 $$
 
