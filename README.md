@@ -150,3 +150,23 @@ Additionally, we need to the gradients of the loss function with respect to the 
 | $B_{H_1}$ | $$\frac{\partial L_{CE}}{\partial Z_1} \cdot \frac{\partial Z_1}{\partial B_{H_1}}$$                 | $$\sum \frac{\partial L_{CE}}{\partial Z_1}$$                      |
 
 For the explanation for the derivative $\displaystyle \frac{\partial L_{CE}}{\partial O}$, view [here](https://towardsdatascience.com/derivative-of-the-softmax-function-and-the-categorical-cross-entropy-loss-ffceefc081d1).
+
+# 4. Remarks
+
+The following are some issues that arose during training and evaluation and possible solutions to combat them. These issues are beyond the scope of this project and are merely suggestions to improve the model if it were to be completed again in a deep learning framework.
+
+## 4.1. Optimizer
+
+Since the learning rate remains static throughout training, a fairly small learning rate would need to be used to prevent overshooting. This provides better convergence to a minima, at the cost of requiring more epochs and potentially becoming stuck in a non-global minima. An optimizer like Adam would alleviate these issues by automatically adjusting learning rates per parameter, which reduces the total number of epochs required for convergence without the trade-off of overshooting.
+
+## 4.2. Model performance
+
+Although the model's performs quite well, it can be further improved with the use of 2D convolutional layer to reduce model size via layer weights while better capturing spatial relations.
+
+Although overfitting was not much of an issue for the trained model, there are a couple solutions that can be applied if it does occur. These solutions include dropout layers, data augmentation and weight decay, which all attempt to help the model generalise.
+
+The dropout layers can be slotted in between layers during training and randomly set some of the next layer's inputs to zero.
+
+Data augmentation, such as slight rotations, translations, scale and addition of noise could be randomly added to the training dataset to help broader the range of data that the model is trained on.
+
+Weight decay is a hyperparameter that can be introduced during the backwards pass of the model to penalise parameters with large magnitudes, forcing the model to generalise.
