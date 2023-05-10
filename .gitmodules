@@ -4,3 +4,6 @@
 [submodule "MNIST data extractor"]
 	path = MNIST data extractor
 	url = git@github.com:Keith-Dao/MNIST-data-extractor.git
+[submodule "c++"]
+	path = c++
+	url = git@github.com:Keith-Dao/C-Plus-Plus-Neural-Net.git
